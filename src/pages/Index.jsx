@@ -1,6 +1,6 @@
-import { Box, Container, Flex, Heading, IconButton, Image, Text, VStack } from "@chakra-ui/react";
-import { FaHome, FaUser, FaUpload } from "react-icons/fa";
 import { useState } from "react";
+import { VStack, Heading, Text, Image, Container, Flex, IconButton, Box, Input, Button } from "@chakra-ui/react";
+import { FaHome, FaUser, FaUpload } from "react-icons/fa";
 
 const photos = [
   { id: 1, src: "https://via.placeholder.com/300", alt: "Photo 1" },
@@ -10,13 +10,25 @@ const photos = [
 
 const Index = () => {
   const [activePage, setActivePage] = useState("home");
+  const [uploadedPhotos, setUploadedPhotos] = useState([]);
+
+  const handlePhotoUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedPhotos(prevPhotos => [...prevPhotos, { id: Date.now(), src: reader.result, alt: file.name }]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const renderContent = () => {
     switch (activePage) {
       case "home":
         return (
           <VStack spacing={4}>
-            {photos.map(photo => (
+            {photos.concat(uploadedPhotos).map(photo => (
               <Image key={photo.id} src={photo.src} alt={photo.alt} boxSize="300px" objectFit="cover" />
             ))}
           </VStack>
@@ -26,13 +38,17 @@ const Index = () => {
           <VStack spacing={4}>
             <Heading size="md">Your Profile</Heading>
             <Text>Here you can see your photos and profile information.</Text>
+            {uploadedPhotos.map(photo => (
+              <Image key={photo.id} src={photo.src} alt={photo.alt} boxSize="300px" objectFit="cover" />
+            ))}
           </VStack>
         );
       case "upload":
         return (
           <VStack spacing={4}>
             <Heading size="md">Upload Photo</Heading>
-            <Text>Feature to upload photos will be implemented here.</Text>
+            <Input type="file" accept="image/*" onChange={handlePhotoUpload} />
+            <Button onClick={() => setActivePage("home")}>Go to Home</Button>
           </VStack>
         );
       default:
