@@ -1,18 +1,55 @@
-// Update this page (the content is just a fallback if you fail and example)
-// Use chakra-ui
-import { Container, Text, VStack } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, IconButton, Image, Text, VStack } from "@chakra-ui/react";
+import { FaHome, FaUser, FaUpload } from "react-icons/fa";
+import { useState } from "react";
 
-// Example of using react-icons
-// import { FaRocket } from "react-icons/fa";
-// <IconButton aria-label="Add" icon={<FaRocket />} size="lg" />; // IconButton would also have to be imported from chakra
+const photos = [
+  { id: 1, src: "https://via.placeholder.com/300", alt: "Photo 1" },
+  { id: 2, src: "https://via.placeholder.com/300", alt: "Photo 2" },
+  { id: 3, src: "https://via.placeholder.com/300", alt: "Photo 3" },
+];
 
 const Index = () => {
+  const [activePage, setActivePage] = useState("home");
+
+  const renderContent = () => {
+    switch (activePage) {
+      case "home":
+        return (
+          <VStack spacing={4}>
+            {photos.map(photo => (
+              <Image key={photo.id} src={photo.src} alt={photo.alt} boxSize="300px" objectFit="cover" />
+            ))}
+          </VStack>
+        );
+      case "profile":
+        return (
+          <VStack spacing={4}>
+            <Heading size="md">Your Profile</Heading>
+            <Text>Here you can see your photos and profile information.</Text>
+          </VStack>
+        );
+      case "upload":
+        return (
+          <VStack spacing={4}>
+            <Heading size="md">Upload Photo</Heading>
+            <Text>Feature to upload photos will be implemented here.</Text>
+          </VStack>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-      <VStack spacing={4}>
-        <Text fontSize="2xl">Your Blank Canvas</Text>
-        <Text>Chat with the agent to start making edits.</Text>
-      </VStack>
+    <Container maxW="container.md" p={4}>
+      <Flex justifyContent="space-between" mb={4}>
+        <IconButton aria-label="Home" icon={<FaHome />} onClick={() => setActivePage("home")} />
+        <IconButton aria-label="Profile" icon={<FaUser />} onClick={() => setActivePage("profile")} />
+        <IconButton aria-label="Upload" icon={<FaUpload />} onClick={() => setActivePage("upload")} />
+      </Flex>
+      <Box>
+        {renderContent()}
+      </Box>
     </Container>
   );
 };
