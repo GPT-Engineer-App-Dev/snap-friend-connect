@@ -11,6 +11,14 @@ const photos = [
 const Index = () => {
   const [activePage, setActivePage] = useState("home");
   const [uploadedPhotos, setUploadedPhotos] = useState([]);
+  const [likes, setLikes] = useState({});
+
+  const handleLike = (photoId) => {
+    setLikes(prevLikes => ({
+      ...prevLikes,
+      [photoId]: (prevLikes[photoId] || 0) + 1
+    }));
+  };
 
   const handlePhotoUpload = (event) => {
     const file = event.target.files[0];
@@ -29,7 +37,11 @@ const Index = () => {
         return (
           <VStack spacing={4}>
             {photos.concat(uploadedPhotos).map(photo => (
-              <Image key={photo.id} src={photo.src} alt={photo.alt} boxSize="300px" objectFit="cover" />
+              <Box key={photo.id} textAlign="center">
+                <Image src={photo.src} alt={photo.alt} boxSize="300px" objectFit="cover" />
+                <Button onClick={() => handleLike(photo.id)}>Like</Button>
+                <Text>{likes[photo.id] || 0} Likes</Text>
+              </Box>
             ))}
           </VStack>
         );
@@ -39,7 +51,10 @@ const Index = () => {
             <Heading size="md">Your Profile</Heading>
             <Text>Here you can see your photos and profile information.</Text>
             {uploadedPhotos.map(photo => (
-              <Image key={photo.id} src={photo.src} alt={photo.alt} boxSize="300px" objectFit="cover" />
+              <Box key={photo.id} textAlign="center">
+                <Image src={photo.src} alt={photo.alt} boxSize="300px" objectFit="cover" />
+                <Text>{likes[photo.id] || 0} Likes</Text>
+              </Box>
             ))}
           </VStack>
         );
